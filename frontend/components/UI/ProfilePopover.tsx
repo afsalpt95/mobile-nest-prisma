@@ -56,9 +56,9 @@ export default function ProfilePopover() {
         <>
           <Popover.Button
             className={`
-              p-2 rounded-md transition-all duration-200 ease-out 
-              hover:bg-hover-bg hover:text-hover-text hover:scale-110
-              ${open ? "bg-hover-bg text-hover-text" : ""}
+              p-2 rounded-md transition-all duration-200 ease-out  cursor-pointer
+              hover:bg-table-heding-color hover:text-hover-text hover:scale-110
+              ${open ? "bg-table-heding-color text-hover-text" : ""}
             `}
           >
             <User size={18} className="text-main-primary " />
@@ -86,7 +86,7 @@ export default function ProfilePopover() {
                           key={index}
                           href={item.href}
                           onClick={() => close()}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-hover-bg transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg block"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-table-heding-color transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg block"
                         >
                           <div className="text-text-secondary">{item.icon}</div>
                           <span>{item.label}</span>
@@ -100,7 +100,7 @@ export default function ProfilePopover() {
                             item.onClick();
                             close();
                           }}
-                          className="w-full cursor-pointer flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-hover-bg transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg"
+                          className="w-full cursor-pointer flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-table-heding-color transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg"
                         >
                           <div className="text-text-secondary">{item.icon}</div>
                           <span>{item.label}</span>

@@ -1,6 +1,6 @@
 
 export interface Organization {
-  id: string;
+  id: number;
   name: string;
   email: string;
   address:string;

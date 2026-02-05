@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -43,7 +44,7 @@ export class BranchController {
   @ApiOperation({ summary: 'Update Branch' })
   @ApiBody({ type: UpdateBranchDto })
   async update(
-    @Param('branchId') branchId: number,
+    @Param('branchId',ParseIntPipe) branchId: number,
     @Req() req: AuthRequest,
     @Body() udpateBranchDto: UpdateBranchDto,
   ): Promise<SuccessResponseDto> {

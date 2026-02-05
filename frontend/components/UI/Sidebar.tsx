@@ -207,8 +207,8 @@ export default function Sidebar() {
                       text-sm font-medium tracking-wide rounded-2xl
                       transition-all duration-150
                       ${pathname === section.href
-                        ? "bg-hover-bg text-hover-text"
-                        : "text-text-secondary hover:bg-hover-bg"}
+                        ? "bg-table-heding-color text-hover-text"
+                        : "text-text-secondary hover:bg-table-heding-color"}
                       ${isOpen ? "justify-start" : "justify-center"}
                     `}
                   >
@@ -229,7 +229,7 @@ export default function Sidebar() {
                       transition-all duration-150 ease-out
                       text-text-secondary hover:text-text-primary
                       ${isOpen ? "justify-between" : "justify-center"}
-                      rounded-2xl hover:bg-hover-bg
+                      rounded-2xl hover:bg-table-heding-color
                     `}
                     title={!isOpen ? section.title : ""}
                   >
@@ -265,8 +265,8 @@ export default function Sidebar() {
                             px-4 py-2.5 rounded-xl
                             transition-colors duration-150
                             ${pathname === item.href
-                              ? "bg-hover-bg text-hover-text"
-                              : "text-text-primary hover:bg-hover-bg"}
+                              ? "bg-table-heding-color text-hover-text"
+                              : "text-text-primary hover:bg-table-heding-color"}
                           `}
                         >
                           <span>{item.label}</span>

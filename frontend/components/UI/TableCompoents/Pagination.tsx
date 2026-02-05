@@ -32,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({
           border border-border
           rounded-lg
           disabled:opacity-40
-          hover:bg-gray-50
+           hover:bg-table-heding-color
           cursor-pointer
         "
       >
@@ -40,7 +40,7 @@ const Pagination: React.FC<PaginationProps> = ({
       </button>
 
       {/* Page indicator */}
-      <span className="px-4 py-1 border border-border rounded-lg bg-gray-100">
+      <span className="px-4 py-1 border border-border rounded-lg bg-navbar">
         {page} / {totalPages || 1}
       </span>
 
@@ -53,7 +53,7 @@ const Pagination: React.FC<PaginationProps> = ({
           border border-border
           rounded-lg
           disabled:opacity-40
-          hover:bg-gray-50
+          hover:bg-table-heding-color
           cursor-pointer
         "
       >

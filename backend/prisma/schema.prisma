@@ -47,7 +47,7 @@ model Branch {
   email     String   
   address   String
   contact   String?
-  logo      String?
+  logo      String? 
   city      String
   state     String
 

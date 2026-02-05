@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({
     >
       <div
         className={`
-          bg-white rounded-2xl shadow-2xl w-full flex flex-col max-h-[90vh]
+          bg-navbar rounded-2xl shadow-2xl w-full flex flex-col max-h-[90vh]
           ${sizeClasses[size]}
           transform transition-all duration-300
           ${animate ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-90"}
@@ -65,7 +65,7 @@ const Modal: React.FC<ModalProps> = ({
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-xl font-semibold">{title}</h2>
           <button onClick={onClose}>
-            <MdClose size={20} />
+            <MdClose className="cursor-pointer" size={20} />
           </button>
         </div>
 

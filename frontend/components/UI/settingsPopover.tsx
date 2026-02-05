@@ -29,10 +29,10 @@ export default function SettingsPopover() {
       {({ open, close }) => (
         <>
           <Popover.Button 
-            className={`
+            className={` cursor-pointer
               p-2 rounded-md transition-all duration-200 ease-out 
-              hover:bg-hover-bg hover:text-hover-text 
-              ${open ? 'bg-hover-bg text-hover-text' : ''}
+              hover:bg-table-heding-color hover:text-hover-text 
+              ${open ? 'bg-table-heding-color text-hover-text' : ''}
             `}
           >
             <Settings size={18} className="text-main-primary " />
@@ -55,7 +55,7 @@ export default function SettingsPopover() {
                       key={index}
                       href={item.href}
                       onClick={() => close()} // Close popover when clicking
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-hover-bg transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg block"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-table-heding-color transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg block"
                     >
                       <div className="text-text-secondary">
                         {item.icon}

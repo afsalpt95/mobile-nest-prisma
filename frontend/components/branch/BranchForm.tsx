@@ -1,16 +1,17 @@
-'use client'
+"use client";
 
-import React, { useRef, useState } from 'react'
-import { FaTimes, FaUpload } from 'react-icons/fa';
-import FormButtons from '../UI/FormButtons';
-import { yupResolver } from '@hookform/resolvers/yup';
+import React, { useRef, useState } from "react";
+import { FaTimes, FaUpload } from "react-icons/fa";
+import FormButtons from "../UI/FormButtons";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { FormValues, Organization } from '@/types/organization.types';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { apiFetch } from '@/service/api';
-import toast, { useToaster } from 'react-hot-toast';
-import Input from '../UI/Input';
-import { useMutation } from '@tanstack/react-query';
+import { FormValues, Organization } from "@/types/organization.types";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { apiFetch } from "@/service/api";
+import toast, { useToaster } from "react-hot-toast";
+import Input from "../UI/Input";
+import { useMutation } from "@tanstack/react-query";
+import Image from "next/image";
 
 const branchSchema = yup.object({
   name: yup.string().required("Branch name is required"),
@@ -22,30 +23,27 @@ const branchSchema = yup.object({
   city: yup.string().required("City is required"),
   state: yup.string().required("State is required"),
   address: yup.string().required("Address is required"),
-  logo: yup.string().optional().nullable()
-})
-
+  logo: yup.string().optional().nullable(),
+});
 
 type Props = {
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormValues) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
   initialData?: Partial<Organization>;
 };
 
-
-const BranchForm : React.FC<Props> = (
-  {
+const BranchForm: React.FC<Props> = ({
   onSubmit,
   onCancel,
   isSubmitting = false,
   initialData = {},
-  }
-) => {
-
-      const [logoPreview, setLogoPreview] = useState<string | null>(
-    initialData.logo ?? null
+}) => {
+  const [logoPreview, setLogoPreview] = useState<string | null>(
+    initialData.logo ?? null,
   );
+
+
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -55,65 +53,63 @@ const BranchForm : React.FC<Props> = (
     setValue,
     formState: { errors, isValid },
   } = useForm<FormValues>({
-     resolver: yupResolver(branchSchema) as any,
-      defaultValues: {
-      name: initialData.name || '',
-      contact: initialData.contact || '',
-      email: initialData.email || '',
-      city: initialData.city || '',
-      state: initialData.state || '',
-      address: initialData.address || '',
+    resolver: yupResolver(branchSchema) as any,
+    defaultValues: {
+      name: initialData.name || "",
+      contact: initialData.contact || "",
+      email: initialData.email || "",
+      city: initialData.city || "",
+      state: initialData.state || "",
+      address: initialData.address || "",
       logo: initialData.logo || null,
     },
     mode: "onChange",
   });
 
+    React.useEffect(() => {
+  if (initialData) {
+    Object.entries(initialData).forEach(([key, value]) => {
+      setValue(key as keyof FormValues, value as any);
+    });
+  }
+}, [initialData]);
+
+
 
   const uploadMutation = useMutation({
-  mutationFn: (file: File) => {
-    const fd = new FormData();
-    fd.append("file", file);
-    return apiFetch.post("/upload", fd); // your API call
-  },
-  onSuccess: (res: any) => {
-    setLogoPreview(res.url);
-    setValue("logo", res.url);
-    toast.success("Logo uploaded successfully");
-  },
-  onError: (err: any) => {
-    toast.error(err.message || "Upload failed");
-  },
-});
+    mutationFn: (file: File) => {
+      const fd = new FormData();
+      fd.append("file", file);
+      return apiFetch.post("/upload/logo", fd); // your API call
+    },
+    onSuccess: (res: any) => {
+      setLogoPreview(res.url);
+      setValue("logo", res.url);
+      toast.success("Logo uploaded successfully");
+    },
+    onError: (err: any) => {
+      console.log(err, "errore coming");
 
-    /* Upload logo instantly */
-      const handleLogoChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+      toast.error(err.message || "Upload failed");
+    },
+  });
+
+  /* Upload logo instantly */
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-  if (!file) return;
+    if (!file) return;
 
-  uploadMutation.mutate(file);
-
+    uploadMutation.mutate(file);
   };
 
- /* Submit */
+  /* Submit */
 
-   const submit : SubmitHandler<FormValues> = (data) => {
-    const fd = new FormData();
-
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-      fd.append(key, String(value));
-    }
-    });
-
-    onSubmit(fd);
+  const submit: SubmitHandler<FormValues> = (data) => {
+    onSubmit(data);
   };
-
-
 
   return (
-     <form  onSubmit={handleSubmit(submit)} className="space-y-6">
+    <form onSubmit={handleSubmit(submit)} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Branch Information */}
         <Input
@@ -126,24 +122,26 @@ const BranchForm : React.FC<Props> = (
         />
 
         {/* // logo upload here  */}
-         <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-3">
           <div
             onClick={() => fileRef.current?.click()}
-            className="w-28 h-28 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer overflow-hidden"
+            className="relative w-28 h-28 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer overflow-hidden"
           >
-            {logoPreview ? (
-              <img src={logoPreview} className="w-full h-full object-cover" />
+            {uploadMutation.isPending ? (
+              <div className="loader-small" /> // your global loader class
+            ) : logoPreview ? (
+              <Image
+                src={logoPreview}
+                alt="preview"
+                fill
+                className="object-cover"
+              />
             ) : (
               <FaUpload />
             )}
           </div>
 
-          <input
-            ref={fileRef}
-            type="file"
-            hidden
-            onChange={handleLogoChange}
-          />
+          <input ref={fileRef} type="file" hidden onChange={handleLogoChange} />
         </div>
 
         <Input
@@ -164,7 +162,7 @@ const BranchForm : React.FC<Props> = (
           required
         />
 
-         <Input
+        <Input
           label="City"
           type="text"
           {...register("city")}
@@ -173,7 +171,7 @@ const BranchForm : React.FC<Props> = (
           required
         />
 
-         <Input
+        <Input
           type="text"
           label="State"
           {...register("state")}
@@ -183,17 +181,15 @@ const BranchForm : React.FC<Props> = (
         />
       </div>
 
-
-
       {/* Address Information */}
-        <Input
-          type="text"
-          label="Address"
-          {...register("address")}
-          error={errors.address?.message}
-          placeholder="Enter full address"
-          required
-        />
+      <Input
+        type="text"
+        label="Address"
+        {...register("address")}
+        error={errors.address?.message}
+        placeholder="Enter full address"
+        required
+      />
 
       <FormButtons
         isSubmitting={isSubmitting}
@@ -202,7 +198,7 @@ const BranchForm : React.FC<Props> = (
         submitDisabled={!isValid}
       />
     </form>
-  )
-}
+  );
+};
 
-export default BranchForm
+export default BranchForm;

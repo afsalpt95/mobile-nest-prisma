@@ -27,6 +27,7 @@ const FormButtons: React.FC<FormButtonsProps> = ({
         className="
           px-6 py-2
           bg-[#ff5656]
+          cursor-pointer
           text-white
           rounded-lg
           hover:bg-[#ff3d3d]
@@ -45,6 +46,8 @@ const FormButtons: React.FC<FormButtonsProps> = ({
         className="
           px-6 py-2
           bg-main-primary
+          cursor-pointer
+          hover:bg-main-hover-primary
           text-white
           rounded-lg
           disabled:opacity-50

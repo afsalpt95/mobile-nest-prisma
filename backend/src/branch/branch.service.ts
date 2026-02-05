@@ -87,7 +87,15 @@ export class BranchService {
 
     await this.prisma.branch.update({
       where: { id: branchId },
-      data: dto,
+      data: {
+        name: dto.name,
+        email: dto.email,
+        address: dto.address,
+        contact: dto.contact,
+        logo: dto.logo,
+        city: dto.city,
+        state: dto.state,
+      },
     });
 
     return {
@@ -154,61 +162,55 @@ export class BranchService {
     };
   }
 
-
   async deleteBranch(
-  userId: number, // usually numeric in PostgreSQL
-  branchId: number,
-): Promise<SuccessResponseDto> {
-  // 1. Get user and check role
-  const user = await this.userHelperService.getUserOrThrow(userId);
-  if (user.role !== Role.Admin) {
-    throw new ForbiddenException('Only admin can delete branch');
+    userId: number, // usually numeric in PostgreSQL
+    branchId: number,
+  ): Promise<SuccessResponseDto> {
+    // 1. Get user and check role
+    const user = await this.userHelperService.getUserOrThrow(userId);
+    if (user.role !== Role.Admin) {
+      throw new ForbiddenException('Only admin can delete branch');
+    }
+
+    // 2. Delete branch
+    await this.prisma.branch.delete({
+      where: { id: branchId },
+    });
+
+    // 3. Return response
+    return {
+      success: true,
+      message: 'Branch deleted successfully',
+      statusCode: HttpStatus.OK,
+    };
   }
 
-  // 2. Delete branch
-  await this.prisma.branch.delete({
-    where: { id: branchId },
-  });
+  async getOneBranch(
+    userId: number,
+    branchId: number,
+  ): Promise<SuccessObjectResponseDto> {
+    const branchIdNum = Number(branchId);
+    if (isNaN(branchIdNum)) {
+      throw new BadRequestException('Invalid branch id');
+    }
 
-  // 3. Return response
-  return {
-    success: true,
-    message: 'Branch deleted successfully',
-    statusCode: HttpStatus.OK,
-  };
-}
+    // 2️Get the user
+    await this.userHelperService.getUserOrThrow(userId);
 
+    // 3 Fetch branch
+    const branch = await this.prisma.branch.findUnique({
+      where: { id: branchIdNum },
+    });
 
-async getOneBranch(
-  userId: number,      
-  branchId: number,    
-): Promise<SuccessObjectResponseDto> {
+    if (!branch) {
+      throw new NotFoundException('Branch not found');
+    }
 
-  const branchIdNum = Number(branchId);
-  if (isNaN(branchIdNum)) {
-    throw new BadRequestException('Invalid branch id');
+    // 4️ Return response
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      data: branch,
+    };
   }
-
-  // 2️Get the user
-  await this.userHelperService.getUserOrThrow(userId);
-
-  // 3 Fetch branch
-  const branch = await this.prisma.branch.findUnique({
-    where: { id: branchIdNum },
-  });
-
-  if (!branch) {
-    throw new NotFoundException('Branch not found');
-  }
-
-  // 4️ Return response
-  return {
-    success: true,
-    statusCode: HttpStatus.OK,
-    data: branch,
-  };
-}
-
-
-
 }

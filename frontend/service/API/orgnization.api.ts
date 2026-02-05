@@ -18,3 +18,8 @@ export const getOrganizations = async ({
 export const createOrganization = async (data: any) => {
    return apiFetch.post("/branch", data);
 };
+
+
+export const updateOrganization = async (id:number, data:any)=>{
+   return apiFetch.put(`/branch/${id}`, data);
+}

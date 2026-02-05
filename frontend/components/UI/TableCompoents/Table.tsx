@@ -6,6 +6,7 @@ import TableSkeleton from "./TableSkelton";
 import ItemsPerPage from "./ItemsPerPage";
 import Pagination from "./Pagination";
 
+
 interface Column {
   key: string;
   label: string;
@@ -46,7 +47,7 @@ const Table: React.FC<Props> = ({
   onItemsPerPageChange,
 }) => {
   return (
-    <div className="w-full bg-white rounded-2xl shadow-sm border border-border mt-6">
+    <div className="w-full bg-navbar rounded-2xl shadow-sm border border-border mt-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 border-b border-border">
         <h2 className="text-lg md:text-xl font-semibold text-text-primary">
@@ -62,7 +63,7 @@ const Table: React.FC<Props> = ({
       <div className="overflow-x-auto w-full">
         <table className="min-w-full w-full border-separate border-spacing-0">
           {/* Head */}
-          <thead className="sticky top-0 bg-gray-50 z-10">
+          <thead className="sticky top-0 bg-table-heding-color z-10">
             <tr>
               {columns.map((col) => (
                 <th
@@ -92,7 +93,7 @@ const Table: React.FC<Props> = ({
               <TableSkeleton columns={columns.length} rows={6} />
             ) : data.length > 0 ? (
               data.map((row, index) => (
-                <tr key={index} className="hover:bg-gray-50 transition">
+                <tr key={index} className="hover:bg-table-heding-color transition">
                   {columns.map((col) => (
                     <td
                       key={col.key}

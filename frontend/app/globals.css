@@ -12,6 +12,7 @@
   --main-primary : #5E72E4;
    --main-hover-primary : #4958b0;
   --border-color: #e5e7eb;
+  --table-heding-color:#f3f4f6;
   --font-sans: var(--font-inter), system-ui, sans-serif;
 
     /* Hover colors */
@@ -58,6 +59,7 @@
   --text-primary: #f0f0f0;     /* Light grey text */
   --text-secondary: #a0a0a0; 
   --main-primary : #5E72E4;
+  --table-heding-color:rgb(36, 36, 36);
    --main-hover-primary : #4958b0;
   --border-color: #333333;   
 }
@@ -74,6 +76,7 @@
   --color-hover-bg: var(--hover-bg);
   --color-hover-text: var(--hover-text);
   --color-main-hover-primary: var(--main-hover-primary);
+  --color-table-heding-color: var(--table-heding-color);
 
 /* where this came from  */
   --color-sidebar-ring: var(--sidebar-ring);
@@ -134,24 +137,24 @@
   }
 }
 
-.loader-table {
-  width: 50px;
-  aspect-ratio: 1;
+
+.loader-small {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #5E72E4;
   border-radius: 50%;
-  border: 8px solid lightblue;
-  border-right-color: orange;
-  animation: l2 1s infinite linear;
+  animation: spin 0.8s linear infinite;
 }
-@keyframes l2 {
+
+@keyframes spin {
   to {
-    transform: rotate(1turn);
+    transform: rotate(360deg);
   }
 }
-@keyframes l3 {
-  to {
-    transform: rotate(1turn);
-  }
-}
+
+
+
 
 html {
   scroll-behavior: smooth;

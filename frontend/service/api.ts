@@ -48,15 +48,18 @@ async function request(
   /* Fetch */
   /* ---------------------------------- */
 
-  const res = await fetch(url, {
+  const isFormData = body instanceof FormData;
+
+const res = await fetch(url, {
     method,
     cache: "no-store",
     credentials: "include",
     headers: {
-      "Content-Type": "application/json",
       ...fetchOptions.headers,
+      // Only set JSON header if it's NOT FormData
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: isFormData ? body : body ? JSON.stringify(body) : undefined,
     ...fetchOptions,
   });
 

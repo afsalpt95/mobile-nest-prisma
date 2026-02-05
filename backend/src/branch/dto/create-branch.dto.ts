@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateBranchDto {
  @ApiProperty({ example:'Reset'})
@@ -31,7 +31,8 @@ export class CreateBranchDto {
    @IsString()
    contact: string;
 
-   @ApiProperty({ example:'logo url'})
+   @ApiProperty({ example:'logo url' , nullable:true})
    @IsString()
-   logo: string;
+   @IsOptional()
+   logo?: string | null;
 }

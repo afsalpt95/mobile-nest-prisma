@@ -9,35 +9,39 @@ import Table from "@/components/UI/TableCompoents/Table";
 import {
   createOrganization,
   getOrganizations,
+  updateOrganization,
 } from "@/service/API/orgnization.api";
 import toast from "react-hot-toast";
 import BranchForm from "@/components/branch/BranchForm";
 import Modal from "@/components/UI/Modal";
+import { formatDate } from "@/helper/date";
+import { Organization } from "@/types/organization.types";
+import Image from "next/image";
+import noImage from "@/public/noImage.png";
 
 const OrganizationPage = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
   const queryClient = useQueryClient();
 
-
-
   //  React Query magic
-  const { data, isLoading,error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["organizations", page, limit, search],
     queryFn: () => getOrganizations({ page, limit, search }),
 
     // v5 replacement for keepPreviousData
-    placeholderData: (prev) => prev,
     staleTime: 1000 * 30, // 30s cache
-    retry:false,
+    retry: false,
   });
 
-    React.useEffect(() => {
+  React.useEffect(() => {
     if (error) {
-      toast.error(error.message || "Server error. Please check if server is running.");
+      toast.error(
+        error.message || "Server error. Please check if server is running.",
+      );
     }
   }, [error]);
 
@@ -50,23 +54,40 @@ const OrganizationPage = () => {
       key: "logo",
       label: "Logo",
       render: (row: any) => (
-        <img
-          src={row.logo || "/placeholder.png"}
-          className="w-10 h-10 rounded-full"
-        />
+        <div className="w-12 h-12 relative">
+          <Image
+            src={row.logo || noImage}
+            alt="logo"
+            fill
+            className="rounded-full object-cover"
+            sizes="48px"
+          />
+        </div>
       ),
     },
     { key: "name", label: "Branch Name" },
     { key: "city", label: "City" },
     { key: "contact", label: "Contact" },
-    { key: "createdAt", label: "Created At" },
+    {
+      key: "createdAt",
+      label: "Created At",
+      render: (row: Organization) => formatDate(row.createdAt),
+    },
     {
       key: "actions",
       label: "Actions",
-      render: () => <EditDeleteIcon />,
+      render: (row: Organization) => (
+        <EditDeleteIcon
+          onEdit={() => {
+            setEditingOrg(row);
+            setIsModalOpen(true);
+          }}
+        />
+      ),
     },
   ];
 
+  //create branch mutation
   const addMutation = useMutation({
     mutationFn: createOrganization,
 
@@ -79,19 +100,46 @@ const OrganizationPage = () => {
       });
     },
 
-    onError: () => {
-      toast.error("Failed to add organization");
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to add organization");
     },
   });
 
-  const handleAddOrganization = (formData: any) => {
-    addMutation.mutate(formData);
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: any }) =>
+      updateOrganization(id, data),
+
+    onSuccess: () => {
+      toast.success("Organization updated successfully");
+      setIsModalOpen(false);
+      setEditingOrg(null);
+
+      queryClient.invalidateQueries({
+        queryKey: ["organizations"],
+      });
+    },
+
+    onError: (error: any) => {
+      toast.error(error.message || "Update failed");
+    },
+  });
+
+  const handleSubmitOrganization = (formData: any) => {
+    if (editingOrg) {
+      updateMutation.mutate({
+        id: editingOrg.id, // or id depending backend
+        data: formData,
+      });
+    } else {
+      addMutation.mutate(formData);
+    }
   };
 
   const handleCancel = () => {
-if (!addMutation.isPending) {
-  setIsModalOpen(false);
-}
+    if (!addMutation.isPending) {
+      setIsModalOpen(false);
+      setEditingOrg(null);
+    }
   };
 
   const tableData = organizations.map((org: any, index: number) => ({
@@ -105,7 +153,10 @@ if (!addMutation.isPending) {
         <h2 className="text-xl md:text-3xl font-semibold">Organization</h2>
 
         <AddButton
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEditingOrg(null);
+            setIsModalOpen(true);
+          }}
           logo={<Building size={30} />}
           btnHeading="Add Organization"
         />
@@ -131,13 +182,14 @@ if (!addMutation.isPending) {
       <Modal
         isOpen={isModalOpen}
         onClose={handleCancel}
-        title="Add Organization"
+        title={editingOrg ? "Update Organization" : "Add Organization"}
         size="lg"
       >
         <BranchForm
-          onSubmit={handleAddOrganization}
+          onSubmit={handleSubmitOrganization}
           onCancel={handleCancel}
-          isSubmitting={addMutation.isPending}
+          isSubmitting={addMutation.isPending || updateMutation.isPending}
+          initialData={editingOrg ?? undefined}
         />
       </Modal>
     </div>
