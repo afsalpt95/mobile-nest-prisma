@@ -145,6 +145,13 @@ exports.Prisma.BranchScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.DepartmentScalarFieldEnum = {
+  id: 'id',
+  dept_name: 'dept_name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -166,7 +173,8 @@ exports.Role = exports.$Enums.Role = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Branch: 'Branch'
+  Branch: 'Branch',
+  Department: 'Department'
 };
 
 /**

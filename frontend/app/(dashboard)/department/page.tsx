@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AddButton from "@/components/UI/AddButton";
-import { Building } from "lucide-react";
+import Modal from "@/components/UI/Modal";
 import EditDeleteIcon from "@/components/UI/TableCompoents/EditDeleteIcon";
 import Table from "@/components/UI/TableCompoents/Table";
+import { Organization } from "@/types/organization.types";
+import { formatDate } from "@/helper/date";
+import { useTableQueryParams } from "@/hooks/useTablequeryParams";
+import { useDebounce } from "@/hooks/useDebounce";
+import React from "react";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createOrganization,
   deleteOrganization,
@@ -13,17 +18,12 @@ import {
   updateOrganization,
 } from "@/service/API/orgnization.api";
 import toast from "react-hot-toast";
-import BranchForm from "@/components/FormUI/BranchForm";
-import Modal from "@/components/UI/Modal";
-import { formatDate } from "@/helper/date";
-import { Organization } from "@/types/organization.types";
-import Image from "next/image";
-import noImage from "@/public/noImage.png";
-import { useTableQueryParams } from "@/hooks/useTablequeryParams";
-import { useDebounce } from "@/hooks/useDebounce";
+import { Building } from "lucide-react";
+import DepartmentForm from "@/components/FormUI/DepartmentForm";
+import { FaPeopleGroup } from "react-icons/fa6";
 import ConfirmAlert from "@/components/UI/ConfirmAlert";
 
-const OrganizationPage = () => {
+const DepartmentPage = () => {
   const { page, limit, search, setPage, setLimit, setSearch } =
     useTableQueryParams();
 
@@ -33,6 +33,8 @@ const OrganizationPage = () => {
   const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+
   const queryClient = useQueryClient();
 
   //  React Query magic
@@ -58,24 +60,7 @@ const OrganizationPage = () => {
 
   const columns = [
     { key: "no", label: "No." },
-    {
-      key: "logo",
-      label: "Logo",
-      render: (row: any) => (
-        <div className="w-12 h-12 relative">
-          <Image
-            src={row.logo || noImage}
-            alt="logo"
-            fill
-            className="rounded-full object-cover"
-            sizes="48px"
-          />
-        </div>
-      ),
-    },
-    { key: "name", label: "Branch Name" },
-    { key: "city", label: "City" },
-    { key: "contact", label: "Contact" },
+    { key: "department", label: "Department" },
     {
       key: "createdAt",
       label: "Created At",
@@ -90,6 +75,7 @@ const OrganizationPage = () => {
             setEditingOrg(row);
             setIsModalOpen(true);
           }}
+
           onDelete={() => {
             setDeleteId(row.id);
             setIsAlertOpen(true);
@@ -136,6 +122,7 @@ const OrganizationPage = () => {
     },
   });
 
+
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteOrganization(id),
 
@@ -148,12 +135,14 @@ const OrganizationPage = () => {
 
       setIsAlertOpen(false);
       setDeleteId(null);
+
     },
 
     onError: (error: any) => {
       toast.error(error.message || "Delete failed");
     },
-  });
+
+  })
 
   const handleSubmitOrganization = (formData: any) => {
     if (editingOrg) {
@@ -181,20 +170,20 @@ const OrganizationPage = () => {
   return (
     <div className="p-2">
       <div className="flex items-start justify-between">
-        <h2 className="text-xl md:text-3xl font-semibold">Organization</h2>
+        <h2 className="text-xl md:text-3xl font-semibold">Department</h2>
 
         <AddButton
           onClick={() => {
             setEditingOrg(null);
             setIsModalOpen(true);
           }}
-          logo={<Building size={30} />}
-          btnHeading="Add Organization"
+          logo={<FaPeopleGroup size={30} />}
+          btnHeading="Add Department"
         />
       </div>
 
       <Table
-        title="Organization"
+        title="Department"
         columns={columns}
         data={tableData}
         isLoading={isLoading}
@@ -216,27 +205,29 @@ const OrganizationPage = () => {
         title={editingOrg ? "Update Organization" : "Add Organization"}
         size="lg"
       >
-        <BranchForm
-          onSubmit={handleSubmitOrganization}
-          onCancel={handleCancel}
-          isSubmitting={addMutation.isPending || updateMutation.isPending}
-          initialData={editingOrg ?? undefined}
+        <DepartmentForm
+        //   onSubmit={handleSubmitOrganization}
+        //   onCancel={handleCancel}
+        //   isSubmitting={addMutation.isPending || updateMutation.isPending}
+        //   initialData={editingOrg ?? undefined}
         />
       </Modal>
 
+
       <ConfirmAlert
-        isOpen={isAlertOpen}
-        closeModal={() => setIsAlertOpen(false)}
-        title="Delete Organization"
-        message="This action cannot be undone. Do you want to delete?"
-        confirmText="Delete"
-        onConfirm={() => {
-          if (deleteId) deleteMutation.mutate(deleteId);
-        }}
-        isLoading={deleteMutation.isPending}
-      />
+  isOpen={isAlertOpen}
+  closeModal={() => setIsAlertOpen(false)}
+  title="Delete Organization"
+  message="This action cannot be undone. Do you want to delete?"
+  confirmText="Delete"
+  onConfirm={() => deleteMutation.mutate(deleteId!)}
+  isLoading={deleteMutation.isPending}
+/>
+
+
+
     </div>
   );
 };
 
-export default OrganizationPage;
+export default DepartmentPage;

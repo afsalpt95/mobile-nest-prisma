@@ -23,3 +23,8 @@ export const createOrganization = async (data: any) => {
 export const updateOrganization = async (id:number, data:any)=>{
    return apiFetch.put(`/branch/${id}`, data);
 }
+
+
+export const deleteOrganization = async (id:number)=>{
+   return apiFetch.delete(`/branch/${id}`);
+}

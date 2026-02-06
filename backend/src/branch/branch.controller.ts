@@ -75,7 +75,7 @@ export class BranchController {
   @ApiOperation({ summary: 'Delete Branch' })
   async delete(
     @Req() req: AuthRequest,
-    @Param('branchId') branchId: number,
+    @Param('branchId',ParseIntPipe) branchId: number,
   ): Promise<SuccessResponseDto> {
     const userId = Number(req.user.userId);
     return this.branchService.deleteBranch(userId, branchId);
@@ -83,10 +83,10 @@ export class BranchController {
 
   @UseGuards(AuthGuard)
   @Get(':branchId')
-  @ApiOperation({ summary: 'Delete Branch' })
+  @ApiOperation({ summary: 'get one  Branch' })
   async getOneBranch(
     @Req() req: AuthRequest,
-    @Param('branchId') branchId: number,
+    @Param('branchId',ParseIntPipe) branchId: number,
   ): Promise<SuccessObjectResponseDto> {
     const userId = Number(req.user.userId);
     return this.branchService.getOneBranch(userId, branchId);

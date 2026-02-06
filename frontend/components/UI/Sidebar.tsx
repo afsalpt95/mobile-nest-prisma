@@ -44,10 +44,10 @@ const menuSections: MenuSection[] = [
     title: "Team",
     icon: <Users  size={20} />,
     items: [
-      { label: "Department", href: "/reports/department" },
-      { label: "Position", href: "/reports/position" },
-      { label: "Employee", href: "/reports/employee" },
-       { label: "User", href: "/reports/user" },
+      { label: "Department", href: "/department" },
+      { label: "Position", href: "/position" },
+      { label: "Employee", href: "/employee" },
+       { label: "User", href: "/user" },
     ],
   },
   {
@@ -239,7 +239,7 @@ export default function Sidebar() {
                       text-sm font-medium tracking-wide rounded-2xl
                       transition-all duration-150
                       ${pathname === section.href
-                        ? "bg-table-heding-color text-hover-text"
+                        ? "bg-table-heding-color text-text-secondary"
                         : "text-text-secondary hover:bg-table-heding-color"}
                       ${isOpen ? "justify-start" : "justify-center"}
                     `}
@@ -297,7 +297,7 @@ export default function Sidebar() {
                             px-4 py-2.5 rounded-xl
                             transition-colors duration-150
                             ${pathname === item.href
-                              ? "bg-table-heding-color text-hover-text"
+                              ? "bg-table-heding-color text-text-primary"
                               : "text-text-primary hover:bg-table-heding-color"}
                           `}
                         >
