@@ -27,7 +27,8 @@ const DepartmentPage = () => {
   const { page, limit, search, setPage, setLimit, setSearch } =
     useTableQueryParams();
 
-  const debouncedSearch = useDebounce(search, 500);
+
+  const debouncedSearch = useDebounce(search, 600);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDept, setEditingDept] = useState<Department | null>(null);
@@ -45,7 +46,15 @@ const DepartmentPage = () => {
     staleTime: 1000 * 30, // 30s cache
     retry: false,
   });
-  console.log(data, "data coming department");
+  
+useEffect(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  console.log("Current URL params:", {
+    page: urlParams.get('page'),
+    limit: urlParams.get('limit'),
+    search: urlParams.get('search')
+  });
+}, [page, limit, search]);
 
   React.useEffect(() => {
     if (error) {
@@ -54,6 +63,8 @@ const DepartmentPage = () => {
       );
     }
   }, [error]);
+
+  
 
   const departments = data?.data ?? [];
   const totalPages = data?.pagination?.totalPages ?? 1;
@@ -157,20 +168,27 @@ const DepartmentPage = () => {
 
   const handleSubmitDepartment = (formData: DepartmentFormValues) => {
     if (editingDept) {
+
+      const payload = {
+      dept_name: formData.departments?.[0] || "", //  convert array → string
+      branchIds: formData.branchIds,
+    };
+
+
       updateMutation.mutate({
         id: editingDept.id, // or id depending backend
-        data: formData,
+        data: payload,
       });
     } else {
-      console.log(formData, "form subitted");
       addMutation.mutate(formData);
     }
   };
 
   const handleCancel = () => {
     if (!addMutation.isPending) {
+      // setEditingDept(null);
       setIsModalOpen(false);
-      setEditingDept(null);
+      
     }
   };
 
@@ -179,7 +197,7 @@ const DepartmentPage = () => {
     no: (page - 1) * limit + index + 1,
   }));
 
-  console.log(tableData, "table data"); 
+  
 
   return (
     <div className="p-2">
@@ -208,8 +226,7 @@ const DepartmentPage = () => {
         onPageChange={setPage}
         itemsPerPage={limit}
         onItemsPerPageChange={(v) => {
-          setLimit(v);
-          setPage(1);
+          setLimit(v)
         }}
       />
 
@@ -220,7 +237,9 @@ const DepartmentPage = () => {
         size="lg"
       >
         <DepartmentForm
+          key={editingDept ? "edit" : "create"}
           isOpen={isModalOpen}
+          isEdit = {!!editingDept}
           onSubmit={handleSubmitDepartment}
           onCancel={handleCancel}
           isSubmitting={addMutation.isPending || updateMutation.isPending}

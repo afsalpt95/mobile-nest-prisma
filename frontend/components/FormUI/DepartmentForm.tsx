@@ -8,15 +8,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import BranchSelectWrapper from "../wrapper/BranchSelectWrapper";
 import { DepartmentFormValues } from "@/types/department.types";
-
-
+import Input from "../UI/Input";
 
 const schema = yup.object({
   branchIds: yup
     .array()
     .of(yup.number())
-    .min(1, "Select at least one branch")
-    .required(),
+    .required().default([]),
 
   departments: yup
     .array()
@@ -28,6 +26,7 @@ const schema = yup.object({
 type Props = {
   onSubmit: (data: DepartmentFormValues) => void;
   onCancel: () => void;
+  isEdit?: boolean;
   isSubmitting?: boolean;
   isOpen?: boolean;
   initialData?: Partial<DepartmentFormValues>;
@@ -37,10 +36,10 @@ const DepartmentForm: React.FC<Props> = ({
   onSubmit,
   onCancel,
   isOpen,
+  isEdit,
   isSubmitting = false,
   initialData = {},
 }) => {
-
   const {
     handleSubmit,
     reset,
@@ -49,19 +48,11 @@ const DepartmentForm: React.FC<Props> = ({
   } = useForm<DepartmentFormValues>({
     resolver: yupResolver(schema) as any,
     mode: "onChange",
-  defaultValues: {
-    branchIds: [],
-    departments: [],
-  },
+    defaultValues: {
+      branchIds: [],
+      departments: [],
+    },
   });
-
-  //     React.useEffect(() => {
-  //   if (initialData) {
-  //     Object.entries(initialData).forEach(([key, value]) => {
-  //       setValue(key as keyof DepartmentFormValues, value as any);
-  //     });
-  //   }
-  // }, [initialData]);
 
 useEffect(() => {
   if (!isOpen) return;
@@ -72,10 +63,12 @@ useEffect(() => {
   });
 }, [isOpen]);
 
+
   
 
   const submit: SubmitHandler<DepartmentFormValues> = (data) => {
     onSubmit(data);
+
   };
 
   return (
@@ -89,26 +82,44 @@ useEffect(() => {
           control={control}
           render={({ field }) => (
             <BranchSelectWrapper
-              value={field.value || []} 
+              value={field.value || []}
               onChange={field.onChange}
               error={errors.branchIds?.message}
             />
           )}
         />
 
-        <Controller
-          name="departments"
-          control={control}
-          render={({ field }) => (
-            <MultiTagInput
-              label="Department"
-              values={field.value}
-              onChange={field.onChange}
-              placeholder="Enter department names..."
-              error={errors.departments?.message}
-            />
-          )}
-        />
+        {isEdit ? (
+          <Controller
+            name="departments"
+            control={control}
+            render={({ field }) => (
+              <Input
+                label="Department"
+                type="text"
+                placeholder="Enter department name"
+                value={field.value?.[0] || ""}
+                onChange={(e) => field.onChange([e.target.value])}
+                error={errors.departments?.message}
+                required
+              />
+            )}
+          />
+        ) : (
+          <Controller
+            name="departments"
+            control={control}
+            render={({ field }) => (
+              <MultiTagInput
+                label="Department"
+                values={field.value}
+                onChange={field.onChange}
+                placeholder="Enter department names..."
+                error={errors.departments?.message}
+              />
+            )}
+          />
+        )}
       </div>
 
       <FormButtons

@@ -18,9 +18,12 @@ const BranchSelectWrapper = ({ value, onChange, error }: any) => {
     value: b.id,
   }));
 
+  useEffect(() => {
+  if (branches.length === 1) {
+    onChange([branches[0].id]); // auto assign
+  }
+}, [branches]);
 
-
-  if (isLoading) return null;
 
   if (branches.length <= 1) return null;
 

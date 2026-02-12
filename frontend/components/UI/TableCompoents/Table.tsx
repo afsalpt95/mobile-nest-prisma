@@ -126,7 +126,7 @@ const Table: React.FC<Props> = ({
 
       <div className="flex justify-between items-center gap-4 px-4 py-3">
         {onItemsPerPageChange && (
-          <ItemsPerPage value={itemsPerPage} onChange={onItemsPerPageChange} />
+          <ItemsPerPage  value={itemsPerPage} onChange={onItemsPerPageChange} />
         )}
 
         {onPageChange && (

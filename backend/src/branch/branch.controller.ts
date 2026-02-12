@@ -91,6 +91,8 @@ export class BranchController {
     return this.branchService.deleteBranch(userId, branchId);
   }
 
+  
+
   @UseGuards(AuthGuard)
   @Get(':branchId')
   @ApiOperation({ summary: 'get one  Branch' })

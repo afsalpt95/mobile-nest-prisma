@@ -20,6 +20,7 @@ const ItemsPerPage: React.FC<ItemsPerPageProps> = ({
       <span className="text-text-secondary">{label}</span>
 
       <select
+      key={value}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         className="

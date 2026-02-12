@@ -37,6 +37,7 @@ const Dropdown: React.FC<Props> = ({
   const filtered = useMemo(() => {
     return options.filter((o) =>
       o.label.toLowerCase().includes(search.toLowerCase()),
+
     );
   }, [search, options]);
 
@@ -59,8 +60,6 @@ const handleSelect = (val: any) => {
     setOpen(false);
   }
 };
-
-
 
   /* ---------------- REMOVE (multi only) ---------------- */
   const remove = (val: any) => {

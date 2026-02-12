@@ -72,6 +72,8 @@ export class DepartmentController {
     @Body() updateDepartmentDto: UpdateDepartmentDto,
   ): Promise<SuccessResponseDto> {
     const userId = Number(req.user.userId);
+    console.log(departmentId,'dpeart');
+    console.log(updateDepartmentDto,'dpeartde');
     return this.departmentService.updateDepartment(
       departmentId,
       updateDepartmentDto,

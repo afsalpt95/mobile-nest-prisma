@@ -27,7 +27,7 @@ const OrganizationPage = () => {
   const { page, limit, search, setPage, setLimit, setSearch } =
     useTableQueryParams();
 
-  const debouncedSearch = useDebounce(search, 500);
+  const debouncedSearch = useDebounce(search, 600);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
@@ -206,7 +206,6 @@ const OrganizationPage = () => {
         itemsPerPage={limit}
         onItemsPerPageChange={(v) => {
           setLimit(v);
-          setPage(1);
         }}
       />
 
