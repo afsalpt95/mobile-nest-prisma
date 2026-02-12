@@ -85,6 +85,7 @@ useEffect(() => {
               value={field.value || []}
               onChange={field.onChange}
               error={errors.branchIds?.message}
+              multiple = {true}
             />
           )}
         />

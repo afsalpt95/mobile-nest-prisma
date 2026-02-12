@@ -4,7 +4,6 @@ import AddButton from "@/components/UI/AddButton";
 import Modal from "@/components/UI/Modal";
 import EditDeleteIcon from "@/components/UI/TableCompoents/EditDeleteIcon";
 import Table from "@/components/UI/TableCompoents/Table";
-import { Organization } from "@/types/organization.types";
 import { formatDate } from "@/helper/date";
 import { useTableQueryParams } from "@/hooks/useTablequeryParams";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -22,11 +21,11 @@ import {
   updateDepartment,
 } from "@/service/API/department.api";
 import { Department, DepartmentFormValues } from "@/types/department.types";
+import BranchSelectWrapper from "@/components/wrapper/BranchSelectWrapper";
 
 const DepartmentPage = () => {
   const { page, limit, search, setPage, setLimit, setSearch } =
     useTableQueryParams();
-
 
   const debouncedSearch = useDebounce(search, 600);
 
@@ -34,27 +33,26 @@ const DepartmentPage = () => {
   const [editingDept, setEditingDept] = useState<Department | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [branchId, setBranchId] = useState<number | null>(null);
 
   const queryClient = useQueryClient();
 
   //  React Query magic
   const { data, isLoading, error } = useQuery({
-    queryKey: ["departments", page, limit, debouncedSearch],
-    queryFn: () => getDepartments({ page, limit, search: debouncedSearch }),
+    queryKey: ["departments", page, limit, debouncedSearch, branchId],
+    queryFn: () =>
+      getDepartments({
+        page,
+        limit,
+        search: debouncedSearch,
+        ...(typeof branchId === "number" && { branchId }), //only add if exist
+      }),
 
     // v5 replacement for keepPreviousData
     staleTime: 1000 * 30, // 30s cache
     retry: false,
   });
-  
-useEffect(() => {
-  const urlParams = new URLSearchParams(window.location.search);
-  console.log("Current URL params:", {
-    page: urlParams.get('page'),
-    limit: urlParams.get('limit'),
-    search: urlParams.get('search')
-  });
-}, [page, limit, search]);
+
 
   React.useEffect(() => {
     if (error) {
@@ -63,8 +61,6 @@ useEffect(() => {
       );
     }
   }, [error]);
-
-  
 
   const departments = data?.data ?? [];
   const totalPages = data?.pagination?.totalPages ?? 1;
@@ -95,20 +91,15 @@ useEffect(() => {
     },
   ];
 
+  const memoInitialData = React.useMemo(() => {
+    if (!editingDept) return undefined;
 
-    const memoInitialData = React.useMemo(() => {
-  if (!editingDept) return undefined;
+    return {
+      branchIds: editingDept.branches?.map((b) => b.id) ?? [],
 
-  return {
-    branchIds: editingDept.branches?.map(b => b.id) ?? [],
-   
-    departments: [editingDept.dept_name],
-  };
-
-}, [editingDept]);
-
-
-
+      departments: [editingDept.dept_name],
+    };
+  }, [editingDept]);
 
   //create branch mutation
   const addMutation = useMutation({
@@ -168,12 +159,10 @@ useEffect(() => {
 
   const handleSubmitDepartment = (formData: DepartmentFormValues) => {
     if (editingDept) {
-
       const payload = {
-      dept_name: formData.departments?.[0] || "", //  convert array → string
-      branchIds: formData.branchIds,
-    };
-
+        dept_name: formData.departments?.[0] || "", //  convert array → string
+        branchIds: formData.branchIds,
+      };
 
       updateMutation.mutate({
         id: editingDept.id, // or id depending backend
@@ -188,7 +177,6 @@ useEffect(() => {
     if (!addMutation.isPending) {
       // setEditingDept(null);
       setIsModalOpen(false);
-      
     }
   };
 
@@ -196,8 +184,6 @@ useEffect(() => {
     ...org,
     no: (page - 1) * limit + index + 1,
   }));
-
-  
 
   return (
     <div className="p-2">
@@ -215,7 +201,13 @@ useEffect(() => {
       </div>
 
       <Table
-        title="Department"
+        branchDropdown={
+          <BranchSelectWrapper
+            value={branchId}
+            onChange={setBranchId}
+            multiple={false}
+          />
+        }
         columns={columns}
         data={tableData}
         isLoading={isLoading}
@@ -226,7 +218,7 @@ useEffect(() => {
         onPageChange={setPage}
         itemsPerPage={limit}
         onItemsPerPageChange={(v) => {
-          setLimit(v)
+          setLimit(v);
         }}
       />
 
@@ -239,7 +231,7 @@ useEffect(() => {
         <DepartmentForm
           key={editingDept ? "edit" : "create"}
           isOpen={isModalOpen}
-          isEdit = {!!editingDept}
+          isEdit={!!editingDept}
           onSubmit={handleSubmitDepartment}
           onCancel={handleCancel}
           isSubmitting={addMutation.isPending || updateMutation.isPending}

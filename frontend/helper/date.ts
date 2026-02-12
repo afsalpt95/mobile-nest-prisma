@@ -1,3 +1,9 @@
-// utils/date.ts
-export const formatDate = (value: string) =>
-  new Date(value).toLocaleDateString("en-GB");
+export const formatDate = (date: string) => {
+  const d = new Date(date);
+
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+
+  return `${dd}-${mm}-${yyyy}`;
+};

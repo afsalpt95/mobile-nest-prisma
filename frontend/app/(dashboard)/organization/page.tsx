@@ -194,7 +194,7 @@ const OrganizationPage = () => {
       </div>
 
       <Table
-        title="Organization"
+        
         columns={columns}
         data={tableData}
         isLoading={isLoading}

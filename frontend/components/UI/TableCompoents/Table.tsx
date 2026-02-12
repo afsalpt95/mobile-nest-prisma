@@ -6,7 +6,6 @@ import TableSkeleton from "./TableSkelton";
 import ItemsPerPage from "./ItemsPerPage";
 import Pagination from "./Pagination";
 
-
 interface Column {
   key: string;
   label: string;
@@ -14,7 +13,7 @@ interface Column {
 }
 
 interface Props {
-  title: string;
+  branchDropdown?: React.ReactNode;
   columns: Column[];
   data: any[];
   isLoading?: boolean;
@@ -31,7 +30,7 @@ interface Props {
 }
 
 const Table: React.FC<Props> = ({
-   title,
+  branchDropdown,
   columns,
   data,
   isLoading = false,
@@ -50,9 +49,7 @@ const Table: React.FC<Props> = ({
     <div className="w-full bg-navbar rounded-2xl shadow-sm border border-border mt-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 border-b border-border">
-        <h2 className="text-lg md:text-xl font-semibold text-text-primary">
-          {title}
-        </h2>
+        <div className="flex items-center gap-3 md:w-[30%]">{branchDropdown}</div>
 
         {onSearchChange && (
           <SearchBar value={search} onChange={onSearchChange} />
@@ -93,7 +90,10 @@ const Table: React.FC<Props> = ({
               <TableSkeleton columns={columns.length} rows={6} />
             ) : data.length > 0 ? (
               data.map((row, index) => (
-                <tr key={index} className="hover:bg-table-heding-color transition">
+                <tr
+                  key={index}
+                  className="hover:bg-table-heding-color transition"
+                >
                   {columns.map((col) => (
                     <td
                       key={col.key}
@@ -126,7 +126,7 @@ const Table: React.FC<Props> = ({
 
       <div className="flex justify-between items-center gap-4 px-4 py-3">
         {onItemsPerPageChange && (
-          <ItemsPerPage  value={itemsPerPage} onChange={onItemsPerPageChange} />
+          <ItemsPerPage value={itemsPerPage} onChange={onItemsPerPageChange} />
         )}
 
         {onPageChange && (

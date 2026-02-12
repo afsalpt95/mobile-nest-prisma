@@ -43,22 +43,22 @@ const Dropdown: React.FC<Props> = ({
 
   /* ---------------- SELECT ---------------- */
 const handleSelect = (val: any) => {
+  const parsed = Number(val);
+
   if (multiple) {
     const arr = Array.isArray(value) ? value : [];
 
-    //  already selected → do nothing
-    if (arr.includes(val)) {
-      setOpen(false); // just close
+    if (arr.includes(parsed)) {
+      setOpen(false);
       return;
     }
 
-    //  only add
-    onChange([...arr, val]);
-    setOpen(false);
+    onChange([...arr, parsed]);
   } else {
-    onChange(val);
-    setOpen(false);
+    onChange(parsed);
   }
+
+  setOpen(false);
 };
 
   /* ---------------- REMOVE (multi only) ---------------- */
@@ -79,7 +79,7 @@ const handleSelect = (val: any) => {
   /* ---------------- RENDER ---------------- */
   return (
     <div className="relative w-full space-y-1">
-      {label && <label className="font-medium">{label}</label>}
+      {label && multiple &&( <label className="font-medium">{label}</label> )}
 
       {/* Input container */}
       <div

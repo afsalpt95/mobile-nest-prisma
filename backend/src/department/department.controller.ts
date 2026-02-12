@@ -22,6 +22,7 @@ import {
 } from 'src/common/service/common.types';
 import { CreateDepartmentDto } from './dto/create-department';
 import { UpdateDepartmentDto } from './dto/update-department';
+import { OptionalIntPipe } from 'src/common/pipes/optional-int.pipe';
 
 @Controller('department')
 export class DepartmentController {
@@ -50,7 +51,7 @@ export class DepartmentController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('search') search?: string,
-    @Query('branchId') branchId?: number,
+    @Query('branchId',OptionalIntPipe) branchId?: number,
   ): Promise<successFetchReponseDto> {
     const userId = Number(req.user.userId);
     return this.departmentService.getDepartments(
