@@ -44,6 +44,7 @@ model Branch {
 
   departments Department[] @relation("DepartmentBranches")
   positions   Position[]
+  employees   Employee[]
 
   name    String  @unique
   email   String
@@ -67,6 +68,7 @@ model Department {
 
   //one to many relation
   positions Position[]
+  employees Employee[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -85,8 +87,37 @@ model Position {
   departmentId Int
   department   Department @relation(fields: [departmentId], references: [id])
 
+  employees Employee[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("positions")
+}
+
+model Employee {
+  id Int @id @default(autoincrement())
+
+  empId         String    @unique
+  emp_name      String
+  email         String?
+  phone         String?
+  gender        String
+  dateOfBirth   DateTime?
+  dateOfJoining DateTime?
+  salary        Float?
+
+  branchId Int
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id])
+
+  posistionId Int
+  position    Position @relation(fields: [posistionId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("employees")
 }

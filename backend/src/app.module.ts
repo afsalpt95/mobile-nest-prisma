@@ -9,6 +9,7 @@ import { BranchModule } from './branch/branch.module';
 import { UploadModule } from './upload/upload.module';
 import { DepartmentModule } from './department/department.module';
 import { PositionModule } from './position/position.module';
+import { EmployeeModule } from './employee/employee.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PositionModule } from './position/position.module';
     UploadModule,
     DepartmentModule,
     PositionModule,
+    EmployeeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

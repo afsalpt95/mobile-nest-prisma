@@ -10,16 +10,8 @@ import BranchSelectWrapper from "../wrapper/BranchSelectWrapper";
 import Input from "../UI/Input";
 import { PositionFormValues } from "@/types/position.types";
 import DepartmentSelectWrapper from "../wrapper/DepartmentSelectWrapper";
+import { useBranches } from "@/hooks/useBranches";
 
-const schema = yup.object({
-  branchId: yup.number().nullable(),
-  departmentId: yup.number().required('Department is required'),
-  positions: yup
-    .array()
-    .of(yup.string().trim().required())
-    .min(1, "Add at least one position")
-    .required(),
-});
 
 type Props = {
   onSubmit: (data: PositionFormValues) => void;
@@ -38,6 +30,34 @@ const PositionForm: React.FC<Props> = ({
   isSubmitting = false,
   initialData = {},
 }) => {
+
+
+const {isBranchRequired} = useBranches()
+
+const schema = React.useMemo(() => {
+  return yup.object({
+    branchId: isBranchRequired
+      ? yup
+          .number()
+          .typeError("Branch is required")
+          .required("Branch is required")
+      : yup.number().nullable(),
+
+    departmentId: yup
+      .number()
+      .typeError("Department is required")
+      .required("Department is required"),
+
+    positions: yup
+      .array()
+      .of(yup.string().trim().required())
+      .min(1, "Add at least one position")
+      .required(),
+  });
+}, [isBranchRequired]);
+
+
+
   const {
     handleSubmit,
     reset,
@@ -54,6 +74,9 @@ const PositionForm: React.FC<Props> = ({
     },
   });
 
+
+  
+
   const selectedBranch = watch('branchId');
 
 useEffect(() => {
@@ -68,7 +91,6 @@ useEffect(() => {
 
 
   const submit: SubmitHandler<PositionFormValues> = (data) => {
-    console.log(data,'data coming')
     onSubmit(data);
 
   };

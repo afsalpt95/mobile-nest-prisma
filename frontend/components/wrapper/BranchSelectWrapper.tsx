@@ -37,7 +37,7 @@ useEffect(() => {
 }, [branches, multiple]);
 
 
- if (multiple && branches.length <= 1) return null
+ if (branches.length <= 1) return null
 
   return (
     <Dropdown

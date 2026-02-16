@@ -161,6 +161,23 @@ exports.Prisma.PositionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.EmployeeScalarFieldEnum = {
+  id: 'id',
+  empId: 'empId',
+  emp_name: 'emp_name',
+  email: 'email',
+  phone: 'phone',
+  gender: 'gender',
+  dateOfBirth: 'dateOfBirth',
+  dateOfJoining: 'dateOfJoining',
+  salary: 'salary',
+  branchId: 'branchId',
+  departmentId: 'departmentId',
+  posistionId: 'posistionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -184,7 +201,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Branch: 'Branch',
   Department: 'Department',
-  Position: 'Position'
+  Position: 'Position',
+  Employee: 'Employee'
 };
 
 /**
