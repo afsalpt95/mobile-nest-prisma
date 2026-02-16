@@ -34,3 +34,7 @@ export const deleteDepartment = async (id: number) => {
 };
 
 
+export const getDepartmentList = async (branchId: number) => {
+    return apiFetch.get(`/department/list/${branchId}`);
+};
+

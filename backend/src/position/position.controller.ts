@@ -70,6 +70,9 @@ export class PositionController {
     @Body() updatepositionDto: UpdatePositionDto,
   ): Promise<SuccessResponseDto> {
     const userId = Number(req.user.userId);
+
+
+    
     return this.positionService.updatePosition(
       positionId,
       updatepositionDto,
@@ -77,7 +80,7 @@ export class PositionController {
     );
   }
 
-  
+
   @UseGuards(AuthGuard)
   @Delete(':positionId')
   @ApiOperation({ summary: 'Delete Position' })

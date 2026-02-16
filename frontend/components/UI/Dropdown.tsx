@@ -23,13 +23,16 @@ type Props = {
 const Dropdown: React.FC<Props> = ({
   label,
   options,
-  value = [],
+  value : propValue,
   onChange,
   placeholder = "Select or search",
   error,
   loading,
   multiple = false,
 }) => {
+
+   const value = propValue ?? (multiple ? [] : null);
+
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -78,7 +81,7 @@ const Dropdown: React.FC<Props> = ({
   /* ---------------- RENDER ---------------- */
   return (
     <div className="relative w-full space-y-1">
-      {label && multiple && <label className="font-medium">{label}</label>}
+      {label &&  <label className="font-medium">{label}</label>}
 
       {/* Input container */}
       <div
