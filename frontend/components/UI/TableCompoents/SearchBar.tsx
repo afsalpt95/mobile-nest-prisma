@@ -9,6 +9,7 @@ interface Props {
   placeholder?: string;
 }
 
+
 const SearchBar: React.FC<Props> = ({
   value,
   onChange,

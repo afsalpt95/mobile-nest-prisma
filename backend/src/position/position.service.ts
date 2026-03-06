@@ -6,7 +6,6 @@ import {
   successFetchReponseDto,
   SuccessResponseDto,
 } from 'src/common/service/common.types';
-import { Role } from 'src/users/user.types';
 import { Prisma } from 'src/generated/prisma';
 import { UpdatePositionDto } from './dto/update-postion';
 

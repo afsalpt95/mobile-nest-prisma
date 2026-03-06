@@ -41,7 +41,7 @@ export class AuthService {
     return {
       user:user,
       success: true,
-      message: 'User created successfully',
+      message: 'User logged in successfully',
       statusCode: HttpStatus.CREATED,
     };
   }
